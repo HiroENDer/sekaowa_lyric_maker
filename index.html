@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SEKAI NO OWARI風リリックメーカー</title>
+<style>
+:root{
+  --bg:#090a10; --panel:#111522; --panel2:#171c2c; --line:#2b3247;
+  --text:#f6f7fb; --muted:#a8b0c2; --accent:#9fb3ff; --accent2:#d998ff;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;color:var(--text);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;
+  background:
+    radial-gradient(circle at 12% 5%,rgba(159,179,255,.12),transparent 28%),
+    radial-gradient(circle at 88% 12%,rgba(217,152,255,.10),transparent 25%),
+    linear-gradient(180deg,#08090e,#0b0e17 60%,#08090e);
+}
+.wrap{max-width:960px;margin:auto;padding:32px 18px 60px}
+.badge{display:inline-block;font-size:12px;color:#d9def0;border:1px solid var(--line);background:rgba(255,255,255,.03);padding:6px 10px;border-radius:999px;margin-bottom:14px}
+h1{font-size:clamp(30px,5vw,54px);line-height:1.05;margin:0 0 10px;letter-spacing:.03em}
+.lead{color:var(--muted);line-height:1.7;margin:0 0 24px}
+.card{background:rgba(17,21,34,.94);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 18px 60px rgba(0,0,0,.28)}
+.section-title{font-size:13px;color:#c9d0e2;letter-spacing:.08em;margin:2px 0 10px}
+.theme-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.theme-btn,.level-btn{
+  border:1px solid var(--line);background:var(--panel2);color:var(--text);
+  border-radius:12px;padding:12px 8px;cursor:pointer;font-weight:700;transition:.18s;
+}
+.theme-btn:hover,.level-btn:hover{transform:translateY(-1px);border-color:#475470}
+.theme-btn.active,.level-btn.active{
+  background:linear-gradient(135deg,rgba(159,179,255,.22),rgba(217,152,255,.22));
+  border-color:#7487c7;
+}
+.settings{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}
+.setting{background:#0e1320;border:1px solid var(--line);border-radius:14px;padding:14px}
+.setting-name{font-weight:800;margin-bottom:4px}
+.setting-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px}
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.level-btn{padding:9px 8px;font-size:14px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.action{border:0;border-radius:12px;padding:13px 18px;font-weight:800;font-size:15px;cursor:pointer}
+.generate{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#080a10}
+.generate:disabled{opacity:.38;cursor:not-allowed}
+.secondary{background:#1a2031;color:#eef1ff;border:1px solid #303a55}
+.hint{margin-top:10px;font-size:12px;color:#818ba1}
+.result{display:none;margin-top:18px}
+.song-title{font-size:clamp(25px,4vw,40px);font-weight:900;margin-bottom:8px}
+.meta{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px}
+.lyrics{white-space:pre-wrap;line-height:1.95;font-size:17px;background:#0c111d;border:1px solid var(--line);border-radius:16px;padding:20px}
+.disclaimer{margin-top:16px;color:#858fa6;font-size:12px;line-height:1.7}
+@media(max-width:760px){
+  .theme-grid{grid-template-columns:repeat(2,1fr)}
+  .theme-btn:last-child{grid-column:1/-1}
+  .settings{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="badge">非公式ファンメイド / ジョーク用 / 既存歌詞不使用</div>
+  <h1>SEKAI NO OWARI風リリックメーカー</h1>
+  <p class="lead">テーマと4つの「度」を自分で設定してから、生成ボタンを押してください。</p>
+
+  <div class="card">
+    <div class="section-title">MAIN THEME</div>
+    <div class="theme-grid">
+      <button class="theme-btn" data-theme="fantasy">ファンタジー</button>
+      <button class="theme-btn" data-theme="philosophy">哲学</button>
+      <button class="theme-btn" data-theme="dark">ダーク</button>
+      <button class="theme-btn" data-theme="love">恋愛</button>
+      <button class="theme-btn" data-theme="society">社会</button>
+    </div>
+
+    <div class="settings">
+      <div class="setting" data-setting="metaphor">
+        <div class="setting-name">比喩度</div>
+        <div class="setting-desc">1＝直接的　2＝ほどほど　3＝象徴表現多め</div>
+        <div class="levels">
+          <button class="level-btn" data-value="1">1</button>
+          <button class="level-btn" data-value="2">2</button>
+          <button class="level-btn" data-value="3">3</button>
+        </div>
+      </div>
+
+      <div class="setting" data-setting="twist">
+        <div class="setting-name">どんでん返し度</div>
+        <div class="setting-desc">1＝なし　2＝少し変化　3＝最後で反転</div>
+        <div class="levels">
+          <button class="level-btn" data-value="1">1</button>
+          <button class="level-btn" data-value="2">2</button>
+          <button class="level-btn" data-value="3">3</button>
+        </div>
+      </div>
+
+      <div class="setting" data-setting="story">
+        <div class="setting-name">ストーリー度</div>
+        <div class="setting-desc">1＝心情中心　2＝出来事あり　3＝短編物語型</div>
+        <div class="levels">
+          <button class="level-btn" data-value="1">1</button>
+          <button class="level-btn" data-value="2">2</button>
+          <button class="level-btn" data-value="3">3</button>
+        </div>
+      </div>
+
+      <div class="setting" data-setting="message">
+        <div class="setting-name">メッセージ度</div>
+        <div class="setting-desc">1＝余韻重視　2＝読み解ける　3＝主題が明確</div>
+        <div class="levels">
+          <button class="level-btn" data-value="1">1</button>
+          <button class="level-btn" data-value="2">2</button>
+          <button class="level-btn" data-value="3">3</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="action generate" id="generateBtn" disabled>生成</button>
+      <button class="action secondary" id="resetBtn">設定をリセット</button>
+    </div>
+    <div class="hint" id="hint">メインテーマと4項目をすべて選ぶと生成できます。</div>
+  </div>
+
+  <div class="card result" id="result">
+    <div class="song-title" id="songTitle"></div>
+    <div class="meta" id="meta"></div>
+    <div class="lyrics" id="lyrics"></div>
+    <div class="actions">
+      <button class="action secondary" id="copyBtn">歌詞をコピー</button>
+      <button class="action secondary" id="regenBtn">同じ設定でもう一曲</button>
+    </div>
+    <div class="disclaimer">
+      ※このページは非公式のファン向けジョークです。既存楽曲の歌詞は収録・引用していません。
+    </div>
+  </div>
+</div>
+
+<script>
+const R = a => a[Math.floor(Math.random()*a.length)];
+
+const state = {theme:null, metaphor:null, twist:null, story:null, message:null};
+
+const banks = {
+  fantasy:{
+    label:"ファンタジー",
+    places:["閉園後の遊園地","月の裏側の町","星の見えない森","海の底の駅","夜だけ開く図書館"],
+    beings:["名前のない怪物","羽のない鳥","眠れない魔法使い","影だけの友達","嘘つきの王様"],
+    objects:["壊れた時計","青い風船","錆びた鍵","紙の王冠","透明な傘"],
+    conflicts:["帰る場所を忘れてしまった","願いを一つだけ失くした","朝の来ない理由を探していた","誰にも見えない扉を守っていた"],
+    messages:["怖いものに名前をつけると少しだけ近づける","終わりに見える場所にも入口は残っている"],
+    titles:["怪物","遊園地","魔法","時計","王様","パレード","星座","迷宮","月光","楽園"]
+  },
+  philosophy:{
+    label:"哲学",
+    places:["誰もいない交差点","午前二時の屋上","止まった時計塔","白い廊下","雨の降る駅"],
+    beings:["答えを知らない少年","鏡の中の僕","名前を失くした旅人","笑わない少女"],
+    objects:["砂時計","古い鏡","消えない鉛筆","裏返った地図"],
+    conflicts:["正しさの意味が分からなくなった","幸せを数えるほど不安になった","自由を選ぶほど選択肢が減っていった"],
+    messages:["正解が一つなら、こんなに人は迷わない","答えを急ぐほど、問いは遠くなる"],
+    titles:["質問","鏡","時計","幸福","正義","境界","自由","存在","矛盾","真実"]
+  },
+  dark:{
+    label:"ダーク",
+    places:["明かりの消えた街","朝の来ない部屋","雨に沈む地下道","閉ざされた劇場"],
+    beings:["笑わない子ども","声を失くした僕","眠れない影","顔のない観客"],
+    objects:["割れた鏡","黒い花","濡れた手紙","止まった懐中時計"],
+    conflicts:["助けを呼ぶ声を飲み込んだ","昨日の自分に追いつかれた","大丈夫という言葉だけ上手くなった"],
+    messages:["苦しさは見えなくても存在する","暗闇は弱さの証明ではない"],
+    titles:["影","記憶","孤独","悪夢","深淵","傷跡","沈黙","絶望","夜","亡霊"]
+  },
+  love:{
+    label:"恋愛",
+    places:["終電後のホーム","雨上がりの街","海沿いの歩道橋","夏の終わりの公園"],
+    beings:["笑う君","昨日の僕","遠ざかる君","強がる僕"],
+    objects:["片方のイヤホン","冷めたコーヒー","古い写真","青い傘"],
+    conflicts:["好きと言えないまま季節が変わった","同じ未来を見ていると思っていた","忘れようとするほど思い出した"],
+    messages:["好きだった時間まで否定しなくていい","別れることと無かったことになることは違う"],
+    titles:["約束","写真","傘","別れ","恋","余韻","片想い","記憶","体温","永遠"]
+  },
+  society:{
+    label:"社会",
+    places:["同じ制服が並ぶ教室","巨大なスクリーンのある街","拍手だけが響く広場","正解だけを教える学校"],
+    beings:["ルールを守る少年","拍手する群衆","質問をやめた先生","番号で呼ばれる僕"],
+    objects:["赤いスタンプ","白いマスク","採点済みの答案","壊れた拡声器"],
+    conflicts:["正しい答えを言うほど誰かが黙った","みんなと同じでいるために嘘をついた","拍手をやめる理由だけ見つからなかった"],
+    messages:["多数派であることと正しいことは同じではない","ルールは人を守るためにある"],
+    titles:["教室","群衆","規則","正義","多数派","制服","境界","社会","自由","沈黙"]
+  }
+};
+
+const metaphors = {
+  1:["僕はまだ答えを知らない。","君の声だけが残っていた。","誰にも言えないまま朝になった。"],
+  2:["夜は黒いカーテンみたいに街を隠した。","僕らは壊れた地図を持ったまま歩いた。","沈黙が部屋の中で少しずつ大きくなった。"],
+  3:["月は錆びたコインみたいに空の底で光っていた。","僕の心臓は誰にも届かない非常ベルみたいに鳴っていた。","君の沈黙は鍵のない檻みたいに僕を閉じ込めた。"]
+};
+
+const endings = {
+  1:["朝になっても答えは出なかった。でも昨日より少しだけ怖くなかった。","最後まで分からなかった。ただ君が笑った理由だけは覚えている。"],
+  2:["そこで初めて気づいた。僕が探していた答えは、ずっと君の質問の中にあった。","最後のページには何も書かれていなかった。だから僕は自分の言葉で続きを書いた。"],
+  3:["最後に鏡を見て気づいた。ずっと追いかけていた怪物は、最初から僕だった。","君に向けて書いたはずの手紙には、僕自身の名前しかなかった。","夜が終わらないんじゃなかった。僕が朝を怖がってカーテンを閉めていただけだった。"]
+};
+
+function updateButton(){
+  const ready = Object.values(state).every(v => v !== null);
+  const btn = document.getElementById("generateBtn");
+  btn.disabled = !ready;
+  document.getElementById("hint").textContent = ready
+    ? "設定完了。生成できます。"
+    : "メインテーマと4項目をすべて選ぶと生成できます。";
+}
+
+document.querySelectorAll(".theme-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".theme-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    state.theme = btn.dataset.theme;
+    updateButton();
+  });
+});
+
+document.querySelectorAll(".setting").forEach(box=>{
+  box.querySelectorAll(".level-btn").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      box.querySelectorAll(".level-btn").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      state[box.dataset.setting] = Number(btn.dataset.value);
+      updateButton();
+    });
+  });
+});
+
+function generateLyrics(){
+  if(Object.values(state).some(v=>v===null)) return;
+  const b = banks[state.theme];
+  const place = R(b.places), being=R(b.beings), obj=R(b.objects), conflict=R(b.conflicts);
+  const title = R(b.titles);
+
+  let verse1, verse2;
+  if(state.story===1){
+    verse1 = `${R(metaphors[state.metaphor])}\n${place}で僕は一人で立っていた。\n${conflict}。`;
+    verse2 = `${R(metaphors[state.metaphor])}\n思い出すたびに昨日と今日の境目が曖昧になった。`;
+  } else if(state.story===2){
+    verse1 = `${place}で僕は${being}に会った。\n${being}は${obj}を握ったまま、${conflict}。\n${R(metaphors[state.metaphor])}`;
+    verse2 = `道の途中で${obj}が落ちているのを見つけた。\n僕らは拾うかどうかで少しだけ言い争った。\n${R(metaphors[state.metaphor])}`;
+  } else {
+    verse1 = `${place}で僕は${being}に会った。\n${being}は${obj}を僕に渡して、「夜が明ける前に返して」と言った。\n僕らは理由も分からないまま歩き始めた。\n途中で${conflict}。`;
+    verse2 = `二つ目の角を曲がると、同じ${obj}が道の真ん中に置かれていた。\n${being}は足を止めた。僕だけが、その意味を知らなかった。\n遠くで鐘が鳴って、街の明かりが一つずつ消えた。`;
+  }
+
+  let chorus;
+  if(state.message===1){
+    chorus = `ねえ、もし明日になって\n今日のことを忘れてしまっても、\nこの夜に名前をつけないで。\n名前のないものだけが残ることもあるから。`;
+  } else if(state.message===2){
+    chorus = `正しいことを選んだはずなのに、\nどうして君は泣いているんだろう。\n${R(b.messages)}。\n僕はまだ、それを信じる練習をしている。`;
+  } else {
+    chorus = `${R(b.messages)}。\nだから僕は、誰かが決めた正解より、\n自分で考えて選んだ間違いを引き受けたい。\nそれが僕の今日を生きるということだ。`;
+  }
+
+  const questions = [
+    "幸せは、失くしてから数えるものなんだろうか。",
+    "正しさは、誰かを傷つけても正しいままなんだろうか。",
+    "自由は、選べることなのか、選ばないことなのか。",
+    "忘れることと、許すことは同じなんだろうか。"
+  ];
+
+  let bridge = (state.theme==="philosophy" || state.message>=2 ? R(questions)+"\n" : "");
+  bridge += state.story===3 ? "僕らは結局、目的地の手前で立ち止まった。" : "答えは出ないまま、空だけが少し明るくなった。";
+
+  const lyrics = `[Verse 1]
+${verse1}
+
+[Verse 2]
+${verse2}
+
+[Chorus]
+${chorus}
+
+[Bridge]
+${bridge}
+
+[Last]
+${R(endings[state.twist])}`;
+
+  document.getElementById("songTitle").textContent = title;
+  document.getElementById("meta").textContent =
+    `テーマ：${b.label} ／ 比喩度：${state.metaphor} ／ どんでん返し度：${state.twist} ／ ストーリー度：${state.story} ／ メッセージ度：${state.message}`;
+  document.getElementById("lyrics").textContent = lyrics;
+  document.getElementById("result").style.display = "block";
+  document.getElementById("result").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+document.getElementById("generateBtn").addEventListener("click",generateLyrics);
+document.getElementById("regenBtn").addEventListener("click",generateLyrics);
+
+document.getElementById("copyBtn").addEventListener("click",async()=>{
+  const t=document.getElementById("songTitle").textContent;
+  const l=document.getElementById("lyrics").textContent;
+  if(!l) return;
+  await navigator.clipboard.writeText(`${t}\n\n${l}`);
+});
+
+document.getElementById("resetBtn").addEventListener("click",()=>{
+  state.theme=state.metaphor=state.twist=state.story=state.message=null;
+  document.querySelectorAll(".active").forEach(el=>el.classList.remove("active"));
+  document.getElementById("result").style.display="none";
+  updateButton();
+});
+
+updateButton();
+</script>
+</body>
+</html>
